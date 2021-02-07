@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package consignment;
+
+service Randomize {
+    rpc DoRand(Request) returns (Response) {}
+}
+
+service Encrypt {
+    rpc DoEnc(Request) returns (Response) {}
+}
+
+message Request {
+    string message = 1;
+}
+
+message Response {
+    string message = 1;
+}
