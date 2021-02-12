@@ -8,6 +8,7 @@ It is generated from these files:
 	consignment.proto
 
 It has these top-level messages:
+	String
 	Request
 	Response
 */
@@ -33,39 +34,56 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+type String struct {
+	RandWord string `protobuf:"bytes,1,opt,name=rand_word,json=randWord" json:"rand_word,omitempty"`
+}
+
+func (m *String) Reset()                    { *m = String{} }
+func (m *String) String() string            { return proto.CompactTextString(m) }
+func (*String) ProtoMessage()               {}
+func (*String) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+
+func (m *String) GetRandWord() string {
+	if m != nil {
+		return m.RandWord
+	}
+	return ""
+}
+
 type Request struct {
-	Message string `protobuf:"bytes,1,opt,name=message" json:"message,omitempty"`
+	StrSlice []*String `protobuf:"bytes,1,rep,name=str_slice,json=strSlice" json:"str_slice,omitempty"`
 }
 
 func (m *Request) Reset()                    { *m = Request{} }
 func (m *Request) String() string            { return proto.CompactTextString(m) }
 func (*Request) ProtoMessage()               {}
-func (*Request) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+func (*Request) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
 
-func (m *Request) GetMessage() string {
+func (m *Request) GetStrSlice() []*String {
 	if m != nil {
-		return m.Message
+		return m.StrSlice
 	}
-	return ""
+	return nil
 }
 
 type Response struct {
-	Message string `protobuf:"bytes,1,opt,name=message" json:"message,omitempty"`
+	Hash string `protobuf:"bytes,1,opt,name=hash" json:"hash,omitempty"`
 }
 
 func (m *Response) Reset()                    { *m = Response{} }
 func (m *Response) String() string            { return proto.CompactTextString(m) }
 func (*Response) ProtoMessage()               {}
-func (*Response) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+func (*Response) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
 
-func (m *Response) GetMessage() string {
+func (m *Response) GetHash() string {
 	if m != nil {
-		return m.Message
+		return m.Hash
 	}
 	return ""
 }
 
 func init() {
+	proto.RegisterType((*String)(nil), "consignment.String")
 	proto.RegisterType((*Request)(nil), "consignment.Request")
 	proto.RegisterType((*Response)(nil), "consignment.Response")
 }
@@ -78,74 +96,10 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// Client API for Randomize service
-
-type RandomizeClient interface {
-	DoRand(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
-}
-
-type randomizeClient struct {
-	cc *grpc.ClientConn
-}
-
-func NewRandomizeClient(cc *grpc.ClientConn) RandomizeClient {
-	return &randomizeClient{cc}
-}
-
-func (c *randomizeClient) DoRand(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := grpc.Invoke(ctx, "/consignment.Randomize/DoRand", in, out, c.cc, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// Server API for Randomize service
-
-type RandomizeServer interface {
-	DoRand(context.Context, *Request) (*Response, error)
-}
-
-func RegisterRandomizeServer(s *grpc.Server, srv RandomizeServer) {
-	s.RegisterService(&_Randomize_serviceDesc, srv)
-}
-
-func _Randomize_DoRand_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RandomizeServer).DoRand(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/consignment.Randomize/DoRand",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RandomizeServer).DoRand(ctx, req.(*Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _Randomize_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "consignment.Randomize",
-	HandlerType: (*RandomizeServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "DoRand",
-			Handler:    _Randomize_DoRand_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "consignment.proto",
-}
-
 // Client API for Encrypt service
 
 type EncryptClient interface {
-	DoEnc(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	Do(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
 }
 
 type encryptClient struct {
@@ -156,9 +110,9 @@ func NewEncryptClient(cc *grpc.ClientConn) EncryptClient {
 	return &encryptClient{cc}
 }
 
-func (c *encryptClient) DoEnc(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *encryptClient) Do(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := grpc.Invoke(ctx, "/consignment.Encrypt/DoEnc", in, out, c.cc, opts...)
+	err := grpc.Invoke(ctx, "/consignment.Encrypt/Do", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -168,27 +122,27 @@ func (c *encryptClient) DoEnc(ctx context.Context, in *Request, opts ...grpc.Cal
 // Server API for Encrypt service
 
 type EncryptServer interface {
-	DoEnc(context.Context, *Request) (*Response, error)
+	Do(context.Context, *Request) (*Response, error)
 }
 
 func RegisterEncryptServer(s *grpc.Server, srv EncryptServer) {
 	s.RegisterService(&_Encrypt_serviceDesc, srv)
 }
 
-func _Encrypt_DoEnc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Encrypt_Do_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(EncryptServer).DoEnc(ctx, in)
+		return srv.(EncryptServer).Do(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/consignment.Encrypt/DoEnc",
+		FullMethod: "/consignment.Encrypt/Do",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EncryptServer).DoEnc(ctx, req.(*Request))
+		return srv.(EncryptServer).Do(ctx, req.(*Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -198,8 +152,8 @@ var _Encrypt_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*EncryptServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "DoEnc",
-			Handler:    _Encrypt_DoEnc_Handler,
+			MethodName: "Do",
+			Handler:    _Encrypt_Do_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -209,15 +163,17 @@ var _Encrypt_serviceDesc = grpc.ServiceDesc{
 func init() { proto.RegisterFile("consignment.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
-	// 156 bytes of a gzipped FileDescriptorProto
+	// 190 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4c, 0xce, 0xcf, 0x2b,
 	0xce, 0x4c, 0xcf, 0xcb, 0x4d, 0xcd, 0x2b, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x46,
-	0x12, 0x52, 0x52, 0xe6, 0x62, 0x0f, 0x4a, 0x2d, 0x2c, 0x4d, 0x2d, 0x2e, 0x11, 0x92, 0xe0, 0x62,
-	0xcf, 0x4d, 0x2d, 0x2e, 0x4e, 0x4c, 0x4f, 0x95, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c, 0x82, 0x71,
-	0x95, 0x54, 0xb8, 0x38, 0x82, 0x52, 0x8b, 0x0b, 0xf2, 0xf3, 0x8a, 0x53, 0x71, 0xab, 0x32, 0x72,
-	0xe1, 0xe2, 0x0c, 0x4a, 0xcc, 0x4b, 0xc9, 0xcf, 0xcd, 0xac, 0x4a, 0x15, 0x32, 0xe7, 0x62, 0x73,
-	0xc9, 0x07, 0x71, 0x85, 0x44, 0xf4, 0x90, 0x9d, 0x00, 0xb5, 0x4c, 0x4a, 0x14, 0x4d, 0x14, 0x62,
-	0xba, 0x12, 0x83, 0x91, 0x23, 0x17, 0xbb, 0x6b, 0x5e, 0x72, 0x51, 0x65, 0x41, 0x89, 0x90, 0x19,
-	0x17, 0xab, 0x4b, 0xbe, 0x6b, 0x5e, 0x32, 0x89, 0x46, 0x24, 0xb1, 0x81, 0xfd, 0x69, 0x0c, 0x08,
-	0x00, 0x00, 0xff, 0xff, 0x43, 0x9b, 0x59, 0x68, 0xfc, 0x00, 0x00, 0x00,
+	0x12, 0x52, 0x52, 0xe5, 0x62, 0x0b, 0x2e, 0x29, 0xca, 0xcc, 0x4b, 0x17, 0x92, 0xe6, 0xe2, 0x2c,
+	0x4a, 0xcc, 0x4b, 0x89, 0x2f, 0xcf, 0x2f, 0x4a, 0x91, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c, 0xe2,
+	0x00, 0x09, 0x84, 0xe7, 0x17, 0xa5, 0x28, 0x59, 0x73, 0xb1, 0x07, 0xa5, 0x16, 0x96, 0xa6, 0x16,
+	0x97, 0x08, 0x19, 0x70, 0x71, 0x16, 0x97, 0x14, 0xc5, 0x17, 0xe7, 0x64, 0x26, 0xa7, 0x4a, 0x30,
+	0x2a, 0x30, 0x6b, 0x70, 0x1b, 0x09, 0xeb, 0x21, 0xdb, 0x02, 0x31, 0x2f, 0x88, 0xa3, 0xb8, 0xa4,
+	0x28, 0x18, 0xa4, 0x48, 0x49, 0x8e, 0x8b, 0x23, 0x28, 0xb5, 0xb8, 0x20, 0x3f, 0xaf, 0x38, 0x55,
+	0x48, 0x88, 0x8b, 0x25, 0x23, 0xb1, 0x38, 0x03, 0x6a, 0x01, 0x98, 0x6d, 0x64, 0xc7, 0xc5, 0xee,
+	0x9a, 0x97, 0x5c, 0x54, 0x59, 0x50, 0x22, 0x64, 0xcc, 0xc5, 0xe4, 0x92, 0x2f, 0x24, 0x82, 0x62,
+	0x1e, 0xd4, 0x62, 0x29, 0x51, 0x34, 0x51, 0x88, 0x89, 0x4a, 0x0c, 0x49, 0x6c, 0x60, 0x7f, 0x19,
+	0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x3f, 0x00, 0x1a, 0x89, 0xec, 0x00, 0x00, 0x00,
 }

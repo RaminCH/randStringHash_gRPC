@@ -2,18 +2,18 @@ syntax = "proto3";
 
 package consignment;
 
-service Randomize {
-    rpc DoRand(Request) returns (Response) {}
-}
-
-service Encrypt {
-    rpc DoEnc(Request) returns (Response) {}
+message String {
+    string rand_word = 1;
 }
 
 message Request {
-    string message = 1;
+    repeated String str_slice  = 1;
 }
 
 message Response {
-    string message = 1;
+    string hash = 1;
+}
+
+service Encrypt {
+    rpc Do(Request) returns (Response) {};
 }
